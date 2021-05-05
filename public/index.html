@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+<!-- SE AÑADE LA PARTE DE DECLARACIÓN DEL MANIFEST Y ALGUNOS META -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="description" content="Una aplicación Mata Marcianos">
+  <meta name="theme-color" content="#6200ee">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-title" content="Matamarcianos">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-touch-icon" href="assets/iconapple192.png">
+  <link rel="apple-touch-icon" href="assets/iconapple192.png">
+<!-- SE AÑADE LA PARTE DE DECLARACIÓN DEL MANIFEST Y ALGUNOS META -->
+  <title>Shooter Game</title>
+  <link type="text/css" rel="stylesheet" href="game.css">
+  <meta name="viewport" content="user-scalable=0"/>
+  <script src="Game.js" type="text/javascript"></script>
+  <script src="Entity.js" type="text/javascript"></script>
+  <script src="Character.js" type="text/javascript"></script>
+  <script src="Player.js" type="text/javascript"></script>
+  <script src="Opponent.js" type="text/javascript"></script>
+  <script src="Shot.js" type="text/javascript"></script>
+  <script src="main.js" type="text/javascript"></script>
+</head>
+
+<body>
+  <!-- por lo que se sea si pongo el codigo al final funciona ok, sino no funciona 
+  <script scr="install.js" type="text/javascript"></script>
+  por lo que se sea si pongo el codigo al final funciona ok, sino no funciona -->
+
+  <button id="pause" class="gamebutton" onclick="this.blur();">Pausa</button>
+  <button id="reset" class="gamebutton" onclick="this.blur();">NUEVA PARTIDA</button>
+  <!-- AÑADIMOS UN BOTON DE INSTALACION --> 
+  <button id="butInstall" class="gamebutton" aria-label="Install" hidden>INSTALAR APP MATAMARCIANOS</button>
+  
+<!-- AÑADIMOS ESTE SCRIPT PARTE DEL CODIGO PARA REGISTRAR EL SERVICE WORKER  -->
+<script>
+if('serviceWorker'in navigator){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register('service-worker.js').then((reg)=>{
+      console.log("Service worker registered",reg);
+    })
+  })
+}
+</script>
+<!-- AÑADIMOS ESTE SCRIPT DE INSTALACION SI LO TOMO DEL FICHERO NO FUNCIONA :  -->
+<script>
+
+'use strict';
+
+let deferredInstallPrompt = null;
+const installButton = document.getElementById('butInstall');
+installButton.addEventListener('click', installPWA);
+window.addEventListener('beforeinstallprompt', saveBeforeInstallPromptEvent);
+function saveBeforeInstallPromptEvent(evt) {
+  // CODELAB: Add code to save event & show the install button.
+  deferredInstallPrompt = evt;
+  installButton.removeAttribute('hidden');
+}
+function installPWA(evt) {
+  // CODELAB: Add code show install prompt & hide the install button.
+  deferredInstallPrompt.prompt();
+  // Hide the install button, it can't be called twice.
+  evt.srcElement.setAttribute('hidden', true);
+  // CODELAB: Log user response to prompt.
+  deferredInstallPrompt.userChoice
+      .then((choice) => {
+        if (choice.outcome === 'accepted') {
+          console.log('User accepted the prompt', choice);
+        } else {
+          console.log('User dismissed the prompt', choice);
+        }
+        deferredInstallPrompt = null;
+      });
+}
+
+window.addEventListener('appinstalled', logAppInstalled);
+function logAppInstalled(evt) {
+  // CODELAB: Add code to log the event
+  console.log('Matamarcianos App was installed.', evt);
+}
+
+</script>  
+
+
+</body>
+
+</html>
